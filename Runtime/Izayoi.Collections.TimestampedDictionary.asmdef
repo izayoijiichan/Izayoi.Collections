@@ -1,0 +1,15 @@
+{
+    "name": "Izayoi.Collections.TimestampedDictionary",
+    "rootNamespace": "Izayoi.Collections",
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": true,
+    "overrideReferences": true,
+    "references": [],
+    "precompiledReferences": [],
+    "optionalUnityReferences": [],
+    "defineConstraints": [],
+    "versionDefines": []
+}
