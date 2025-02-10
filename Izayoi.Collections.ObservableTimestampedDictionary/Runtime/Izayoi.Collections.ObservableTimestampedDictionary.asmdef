@@ -1,0 +1,19 @@
+{
+    "name": "Izayoi.Collections.ObservableTimestampedDictionary",
+    "rootNamespace": "Izayoi.Collections",
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": true,
+    "overrideReferences": true,
+    "references": [
+        "Izayoi.Collections.TimestampedDictionary"
+    ],
+    "precompiledReferences": [
+        "System.Reactive.dll"
+    ],
+    "optionalUnityReferences": [],
+    "defineConstraints": [],
+    "versionDefines": []
+}

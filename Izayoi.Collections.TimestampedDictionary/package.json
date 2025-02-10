@@ -1,0 +1,15 @@
+{
+  "name": "com.izayoi.collections.timestampeddictionary",
+  "displayName": "Izayoi.Collections.TimestampedDictionary",
+  "description": "This is a dictionary that records datetime when data is added.",
+  "author": "Izayoi Jiichan",
+  "version": "1.0.1",
+  "keywords": [
+    "nuget",
+    "cache",
+    "dictionary",
+    "timestamp"
+  ],
+  "unity": "2021.3",
+  "dependencies": { }
+}

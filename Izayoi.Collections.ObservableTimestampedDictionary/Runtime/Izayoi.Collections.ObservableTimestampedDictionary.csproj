@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <ImplicitUsings>false</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Izayoi.Collections</RootNamespace>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Authors>Izayoi</Authors>
+    <Description>This is a dictionary that records datetime when data is added.</Description>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>cache;dictionary;observable;timestamp</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/izayoijiichan/Izayoi.Collections</RepositoryUrl>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Title>Observable Timestamped Dictionary</Title>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Izayoi.Collections.TimestampedDictionary\Runtime\Izayoi.Collections.TimestampedDictionary.csproj" />
+  </ItemGroup>
+
+  <Target Name="SetDependencyVersion" AfterTargets="_GetProjectReferenceVersions">
+    <ItemGroup>
+      <_ProjectReferencesWithVersions Update="..\..\Izayoi.Collections.TimestampedDictionary\Runtime\Izayoi.Collections.TimestampedDictionary.csproj" ProjectVersion="1.0.1" />
+    </ItemGroup>
+  </Target>
+
+</Project>

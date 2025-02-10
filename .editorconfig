@@ -103,32 +103,35 @@ dotnet_naming_style.first_upper.capitalization = first_word_upper
 # prefix_interface_interface_with_i - Interfaces must be PascalCase and the first character of an interface must be an 'I'
 dotnet_naming_style.prefix_interface_interface_with_i.capitalization = pascal_case
 dotnet_naming_style.prefix_interface_interface_with_i.required_prefix = I
+# underscore prefix
+#dotnet_naming_style.prefix_underscore.capitalization = camel_case
+dotnet_naming_style.prefix_underscore.required_prefix = _
 
 # Naming Rules
 # Constant fields must be PascalCase
 dotnet_naming_rule.constant_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.constant_fields_must_be_pascal_case.symbols = constant_fields
 dotnet_naming_rule.constant_fields_must_be_pascal_case.style = pascal_case
-# Public, internal and protected readonly fields must be PascalCase
+# Public, internal and protected readonly fields must be camelCase with underscore
 dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.symbols = non_private_readonly_fields
-dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.style = pascal_case
+dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.style = prefix_underscore
 # Static readonly fields must be PascalCase
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.symbols = static_readonly_fields
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.style = pascal_case
-# Private readonly fields must be camelCase
+# Private readonly fields must be camelCase with underscore
 dotnet_naming_rule.private_readonly_fields_must_be_camel_case.severity = warning
 dotnet_naming_rule.private_readonly_fields_must_be_camel_case.symbols = private_readonly_fields
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = camel_case
+dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = prefix_underscore
 # Public and internal fields must be PascalCase
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.symbols = public_internal_fields
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.style = pascal_case
-# Private and protected fields must be camelCase
+# Private and protected fields must be camelCase with underscore
 dotnet_naming_rule.private_protected_fields_must_be_camel_case.severity = warning
 dotnet_naming_rule.private_protected_fields_must_be_camel_case.symbols = private_protected_fields
-dotnet_naming_rule.private_protected_fields_must_be_camel_case.style = camel_case
+dotnet_naming_rule.private_protected_fields_must_be_camel_case.style = prefix_underscore
 # Public members must be capitalized
 dotnet_naming_rule.public_members_must_be_capitalized.severity = warning
 dotnet_naming_rule.public_members_must_be_capitalized.symbols = public_symbols

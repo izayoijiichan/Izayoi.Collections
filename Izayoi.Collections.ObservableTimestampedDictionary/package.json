@@ -1,0 +1,20 @@
+{
+  "name": "com.izayoi.collections.observabletimestampeddictionary",
+  "displayName": "Izayoi.Collections.ObservableTimestampedDictionary",
+  "description": "This is a dictionary that records datetime when data is added.",
+  "author": "Izayoi Jiichan",
+  "version": "1.0.0",
+  "keywords": [
+    "nuget",
+    "cache",
+    "dictionary",
+    "observable",
+    "timestamp"
+  ],
+  "unity": "2021.3",
+  "dependencies":
+  {
+    "com.izayoi.collections.timestampeddictionary": "1.0.1",
+    "org.nuget.system.reactive": "4.0.0"
+  }
+}
