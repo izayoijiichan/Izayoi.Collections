@@ -9,51 +9,52 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using TUnit.Core;
 
     public class ObservableTimestampedDictionaryTest2
     {
         #region Construct
 
-        [Fact]
-        public void Test2_Construct()
+        [Test]
+        public async ValueTask Test2_Construct()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(-1, tsDictionary.Capacity);
+            await Assert.That(tsDictionary.Capacity).IsEqualTo(-1);
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
         }
 
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void Test2_Construct_with_correct_capacity(int capacity)
+        [Test]
+        [Arguments(-1)]
+        [Arguments(1)]
+        [Arguments(2)]
+        public async ValueTask Test2_Construct_with_correct_capacity(int capacity)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity);
 
-            Assert.Equal(capacity, tsDictionary.Capacity);
+            await Assert.That(tsDictionary.Capacity).IsEqualTo(capacity);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-2)]
-        [InlineData(-3)]
-        public void Test2_Construct_with_invalid_capacity(int capacity)
+        [Test]
+        [Arguments(0)]
+        [Arguments(-2)]
+        [Arguments(-3)]
+        public async ValueTask Test2_Construct_with_invalid_capacity(int capacity)
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity);
+                var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity);
             });
 
-            Assert.Equal("Izayoi.Collections.ObservableTimestampedDictionary", exception.Source);
+            await Assert.That(exception.Source).IsEqualTo("Izayoi.Collections.ObservableTimestampedDictionary");
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void Test2_Construct_with_initial_data(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        public async ValueTask Test2_Construct_with_initial_data(int testPatternIndex)
         {
             var testPatternList = new List<Dictionary<int, string>>()
             {
@@ -77,20 +78,20 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 },
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             var initialData = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: initialData);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: initialData);
 
-            Assert.Equal(initialData.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(initialData.Count);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void Test2_Construct_with_capacity_and_initial_data(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        public async ValueTask Test2_Construct_with_capacity_and_initial_data(int testPatternIndex)
         {
             var testPatternList = new List<Dictionary<int, string>>()
             {
@@ -114,17 +115,17 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 },
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             var initialData = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: initialData.Count, dictionary: initialData);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: initialData.Count, dictionary: initialData);
 
-            Assert.Equal(initialData.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(initialData.Count);
         }
 
-        [Fact]
-        public void Test2_Construct_with_invalid_capacity_and_initial_data()
+        [Test]
+        public async ValueTask Test2_Construct_with_invalid_capacity_and_initial_data()
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
@@ -135,45 +136,45 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                     { 13, "value13" },
                 };
 
-                using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: initialData.Count - 1, initialData);
+                var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: initialData.Count - 1, initialData);
             });
 
-            Assert.Equal("Izayoi.Collections.ObservableTimestampedDictionary", exception.Source);
+            await Assert.That(exception.Source).IsEqualTo("Izayoi.Collections.ObservableTimestampedDictionary");
         }
 
         #endregion
 
         #region Property
 
-        [Fact]
-        public void Test2_Property_Count()
+        [Test]
+        public async ValueTask Test2_Property_Count()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
 
             {
                 bool addResult = tsDictionary.TryAdd(1, "value1");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             {
                 bool addResult = tsDictionary.TryAdd(2, "value2");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
                 bool addResult = tsDictionary.TryAdd(3, "value3");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(3, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(3);
             }
         }
 
@@ -181,26 +182,26 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Add
 
-        [Theory]
-        [InlineData(11, "value11")]
-        [InlineData(12, "value12")]
-        [InlineData(13, "value13")]
-        public void Test2_TryAdd_one(int key, string value)
+        [Test]
+        [Arguments(11, "value11")]
+        [Arguments(12, "value12")]
+        [Arguments(13, "value13")]
+        public async ValueTask Test2_TryAdd_one(int key, string value)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             bool addResult = tsDictionary.TryAdd(key, value);
 
-            Assert.True(addResult);
+            await Assert.That(addResult).IsTrue();
 
-            Assert.Equal(1, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(1);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void Test2_TryAdd_any(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        public async ValueTask Test2_TryAdd_any(int testPatternIndex)
         {
             var testPatternList = new List<Dictionary<int, string>>()
             {
@@ -231,79 +232,79 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 },
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             var inputData = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             foreach (var inParam in inputData)
             {
                 bool addResult = tsDictionary.TryAdd(inParam.Key, inParam.Value);
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
             }
 
-            Assert.Equal(inputData.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputData.Count);
         }
 
-        [Theory]
-        [InlineData(11, "value11")]
-        public void Test2_TryAdd_duplicate_key(int key, string value)
+        [Test]
+        [Arguments(11, "value11")]
+        public async ValueTask Test2_TryAdd_duplicate_key(int key, string value)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             bool addResult;
 
             addResult = tsDictionary.TryAdd(key, value);
 
-            Assert.True(addResult);
+            await Assert.That(addResult).IsTrue();
 
-            Assert.Equal(1, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(1);
 
             addResult = tsDictionary.TryAdd(key, value);
 
-            Assert.False(addResult);
+            await Assert.That(addResult).IsFalse();
         }
 
         #endregion
 
         #region Add and GetValue
 
-        [Theory]
-        [InlineData(11, "value11")]
-        [InlineData(12, "value12")]
-        [InlineData(13, "value13")]
-        [InlineData(14, "value14")]
-        [InlineData(15, "value15")]
-        public void Test2_TryAdd_and_TryGetValue_one(int key, string value)
+        [Test]
+        [Arguments(11, "value11")]
+        [Arguments(12, "value12")]
+        [Arguments(13, "value13")]
+        [Arguments(14, "value14")]
+        [Arguments(15, "value15")]
+        public async ValueTask Test2_TryAdd_and_TryGetValue_one(int key, string value)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             {
                 bool addResult = tsDictionary.TryAdd(key, value);
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             {
                 bool getResult = tsDictionary.TryGetValue(key, out var getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal(value, getValue);
+                await Assert.That(getValue).IsEqualTo(value);
             }
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void Test2_TryAdd_and_TryGetValue_any(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        [Arguments(4)]
+        public async ValueTask Test2_TryAdd_and_TryGetValue_any(int testPatternIndex)
         {
             var testPatternList = new List<Dictionary<int, string>>()
             {
@@ -343,41 +344,41 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 },
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             var inputData = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputData);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputData);
 
-            Assert.Equal(inputData.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputData.Count);
 
             foreach (var inParam in inputData)
             {
                 bool getResult = tsDictionary.TryGetValue(inParam.Key, out var getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal(inParam.Value, getValue);
+                await Assert.That(getValue).IsEqualTo(inParam.Value);
             }
         }
 
-        [Fact]
-        public void Test2_TryAdd_and_TryGetValue_on_Capacity_1()
+        [Test]
+        public async ValueTask Test2_TryAdd_and_TryGetValue_on_Capacity_1()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: 1);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: 1);
 
             {
                 bool addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
 
                 bool getResult = tsDictionary.TryGetValue(11, out var getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal("value11", getValue);
+                await Assert.That(getValue).IsEqualTo("value11");
             }
 
             {
@@ -385,9 +386,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 // key 11 is removed
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);  // not 2
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);  // not 2
 
                 bool getResult;
 
@@ -395,22 +396,22 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 getResult = tsDictionary.TryGetValue(11, out getValue);
 
-                Assert.False(getResult);
+                await Assert.That(getResult).IsFalse();
 
                 getResult = tsDictionary.TryGetValue(12, out getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal("value12", getValue);
+                await Assert.That(getValue).IsEqualTo("value12");
             }
 
             tsDictionary.CheckConsistency();
         }
 
-        [Fact]
-        public void Test2_TryAdd_and_TryGetValue_on_Capacity_2()
+        [Test]
+        public async ValueTask Test2_TryAdd_and_TryGetValue_on_Capacity_2()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: 2);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(capacity: 2);
 
             bool addResult;
             bool getResult;
@@ -419,13 +420,13 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 addResult = tsDictionary.TryAdd(12, "value12");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
@@ -433,25 +434,25 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 // key 11 is removed
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);  // not 3
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);  // not 3
 
                 getResult = tsDictionary.TryGetValue(11, out getValue);
 
-                Assert.False(getResult);
+                await Assert.That(getResult).IsFalse();
 
                 getResult = tsDictionary.TryGetValue(12, out getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal("value12", getValue);
+                await Assert.That(getValue).IsEqualTo("value12");
 
                 getResult = tsDictionary.TryGetValue(13, out getValue);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal("value13", getValue);
+                await Assert.That(getValue).IsEqualTo("value13");
             }
 
             tsDictionary.CheckConsistency();
@@ -461,10 +462,10 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Update
 
-        [Fact]
+        [Test]
         public async Task Test2_TryUpdate()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             long timestamp1 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
@@ -473,9 +474,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool addResult = tsDictionary.TryAdd(11, "value1");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             await Task.Delay(10);
@@ -487,30 +488,30 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool getResult = tsDictionary.TryGetData(11, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp1, timestamp2);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp1, timestamp2);
 
-                Assert.Equal(11, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(11);
 
-                Assert.Equal("value1", getData.Value);
+                await Assert.That(getData.Value).IsEqualTo("value1");
             }
 
             {
                 bool addResult = tsDictionary.TryAdd(12, "value2");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(11, timestampedKeys[0].Key);
-                Assert.Equal(12, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(11);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(12);
             }
 
             await Task.Delay(10);
@@ -522,9 +523,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool updateResult = tsDictionary.TryUpdate(11, "value3");
 
-                Assert.True(updateResult);
+                await Assert.That(updateResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             await Task.Delay(10);
@@ -536,31 +537,32 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool getResult = tsDictionary.TryGetData(11, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp3, timestamp4);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp3, timestamp4);
 
-                Assert.Equal(11, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(11);
 
-                Assert.Equal("value3", getData.Value);
+                await Assert.That(getData.Value).IsEqualTo("value3");
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(12, timestampedKeys[0].Key);
-                Assert.Equal(11, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(12);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(11);
+
             }
 
             tsDictionary.CheckConsistency();
         }
 
-        [Fact]
+        [Test]
         public async Task Test2_TryUpdate_with_comparison()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             long timestamp1 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
@@ -569,9 +571,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool addResult = tsDictionary.TryAdd(11, "value1");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             await Task.Delay(10);
@@ -583,30 +585,30 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool getResult = tsDictionary.TryGetData(11, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp1, timestamp2);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp1, timestamp2);
 
-                Assert.Equal(11, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(11);
 
-                Assert.Equal("value1", getData.Value);
+                await Assert.That(getData.Value).IsEqualTo("value1");
             }
 
             {
                 bool addResult = tsDictionary.TryAdd(12, "value2");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(11, timestampedKeys[0].Key);
-                Assert.Equal(12, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(11);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(12);
             }
 
             await Task.Delay(10);
@@ -618,9 +620,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool updateResult = tsDictionary.TryUpdate(11, "value3", comparisonValue: "unknown");
 
-                Assert.False(updateResult);
+                await Assert.That(updateResult).IsFalse();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             await Task.Delay(10);
@@ -632,9 +634,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool updateResult = tsDictionary.TryUpdate(11, "value3", comparisonValue: "value1");
 
-                Assert.True(updateResult);
+                await Assert.That(updateResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             await Task.Delay(10);
@@ -646,22 +648,22 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool getResult = tsDictionary.TryGetData(11, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp4, timestamp5);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp4, timestamp5);
 
-                Assert.Equal(11, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(11);
 
-                Assert.Equal("value3", getData.Value);
+                await Assert.That(getData.Value).IsEqualTo("value3");
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(12, timestampedKeys[0].Key);
-                Assert.Equal(11, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(12);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(11);
             }
 
             tsDictionary.CheckConsistency();
@@ -671,10 +673,10 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region AddOrUpdate
 
-        [Fact]
+        [Test]
         public async Task Test2_AddOrUpdate()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             TimestampedDictionaryData<int, string> dictionaryData;
 
@@ -691,15 +693,15 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             await Task.Delay(10);
 
             {
-                Assert.NotNull(dictionaryData);
+                await Assert.That(dictionaryData).IsNotNull();
 
-                Assert.InRange(dictionaryData.Timestamp, timestamp1, timestamp2);
+                await Assert.That(dictionaryData.Timestamp).IsBetween(timestamp1, timestamp2);
 
-                Assert.Equal(11, dictionaryData.Key);
+                await Assert.That(dictionaryData.Key).IsEqualTo(11);
 
-                Assert.Equal("value1", dictionaryData.Value);
+                await Assert.That(dictionaryData.Value).IsEqualTo("value1");
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             await Task.Delay(10);
@@ -717,22 +719,22 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             await Task.Delay(10);
 
             {
-                Assert.NotNull(dictionaryData);
+                await Assert.That(dictionaryData).IsNotNull();
 
-                Assert.InRange(dictionaryData.Timestamp, timestamp3, timestamp4);
+                await Assert.That(dictionaryData.Timestamp).IsBetween(timestamp3, timestamp4);
 
-                Assert.Equal(12, dictionaryData.Key);
+                await Assert.That(dictionaryData.Key).IsEqualTo(12);
 
-                Assert.Equal("value2", dictionaryData.Value);
+                await Assert.That(dictionaryData.Value).IsEqualTo("value2");
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(11, timestampedKeys[0].Key);
-                Assert.Equal(12, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(11);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(12);
             }
 
             await Task.Delay(10);
@@ -750,22 +752,22 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             await Task.Delay(10);
 
             {
-                Assert.NotNull(dictionaryData);
+                await Assert.That(dictionaryData).IsNotNull();
 
-                Assert.InRange(dictionaryData.Timestamp, timestamp5, timestamp6);
+                await Assert.That(dictionaryData.Timestamp).IsBetween(timestamp5, timestamp6);
 
-                Assert.Equal(11, dictionaryData.Key);
+                await Assert.That(dictionaryData.Key).IsEqualTo(11);
 
-                Assert.Equal("value3", dictionaryData.Value);
+                await Assert.That(dictionaryData.Value).IsEqualTo("value3");
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             {
                 var timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(12, timestampedKeys[0].Key);
-                Assert.Equal(11, timestampedKeys[1].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(12);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(11);
             }
 
             tsDictionary.CheckConsistency();
@@ -775,50 +777,50 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Remove
 
-        [Theory]
-        [InlineData(11, "value11")]
-        [InlineData(12, "value12")]
-        [InlineData(13, "value13")]
-        [InlineData(14, "value14")]
-        public void Test2_TryRemove_one(int key, string value)
+        [Test]
+        [Arguments(11, "value11")]
+        [Arguments(12, "value12")]
+        [Arguments(13, "value13")]
+        [Arguments(14, "value14")]
+        public async ValueTask Test2_TryRemove_one(int key, string value)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             {
                 bool addResult = tsDictionary.TryAdd(key, value);
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             {
                 bool removeResult = tsDictionary.TryRemove(key, out var removeValue);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
-                Assert.Equal(value, removeValue);
+                await Assert.That(removeValue).IsEqualTo(value);
 
-                Assert.Equal(0, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(0);
             }
 
             {
                 bool getResult = tsDictionary.TryGetValue(key, out var getValue);
 
-                Assert.False(getResult);
+                await Assert.That(getResult).IsFalse();
 
-                Assert.Null(getValue);
+                await Assert.That(getValue).IsNull();
             }
 
             tsDictionary.CheckConsistency();
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        public void Test2_TryRemove_any(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        public async ValueTask Test2_TryRemove_any(int testPatternIndex)
         {
             var testPatternList = new List<(Dictionary<int, string> inputDic, List<int> removeKeys)>()
             {
@@ -870,24 +872,24 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 ),
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
-            (var inputDic, var removeKeys ) = testPatternList[testPatternIndex];
+            (var inputDic, var removeKeys) = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputDic);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputDic);
 
-            Assert.Equal(inputDic.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputDic.Count);
 
             foreach (var removeKey in removeKeys)
             {
                 bool removeResult = tsDictionary.TryRemove(removeKey, out var removeValue);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
-                //Assert.Equal(n, removeValue);  // @notice
+                //await Assert.That(removeValue).IsEqualTo(n);  // @notice
             }
 
-            Assert.Equal(inputDic.Count - removeKeys.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputDic.Count - removeKeys.Count);
 
             foreach (var inParam in inputDic)
             {
@@ -895,15 +897,15 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 if (removeKeys.Exists(key => key == inParam.Key))
                 {
-                    Assert.False(getResult);
+                    await Assert.That(getResult).IsFalse();
 
-                    Assert.Null(getValue);
+                    await Assert.That(getValue).IsNull();
                 }
                 else
                 {
-                    Assert.True(getResult);
+                    await Assert.That(getResult).IsTrue();
 
-                    Assert.Equal(inParam.Value, getValue);
+                    await Assert.That(getValue).IsEqualTo(inParam.Value);
                 }
             }
 
@@ -914,126 +916,126 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Clear
 
-        [Fact]
-        public void Test2_Clear_zero()
+        [Test]
+        public async ValueTask Test2_Clear_zero()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
 
             tsDictionary.Clear();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
         }
 
-        [Fact]
-        public void Test2_Clear_one()
+        [Test]
+        public async ValueTask Test2_Clear_one()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
 
             {
                 bool addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             tsDictionary.Clear();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
         }
 
-        [Fact]
-        public void Test2_Clear_two()
+        [Test]
+        public async ValueTask Test2_Clear_two()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
 
             {
                 bool addResult;
 
                 addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
 
                 addResult = tsDictionary.TryAdd(12, "value12");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             tsDictionary.Clear();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
         }
 
-        [Theory]
-        [InlineData(-1, -1)]
-        [InlineData(-1, 1)]
-        [InlineData(-1, 2)]
-        [InlineData(1, -1)]
-        [InlineData(1, 1)]
-        [InlineData(1, 2)]
-        public void Test2_Clear_with_newCapacity(int initialCapacity, int newCapacity)
+        [Test]
+        [Arguments(-1, -1)]
+        [Arguments(-1, 1)]
+        [Arguments(-1, 2)]
+        [Arguments(1, -1)]
+        [Arguments(1, 1)]
+        [Arguments(1, 2)]
+        public async ValueTask Test2_Clear_with_newCapacity(int initialCapacity, int newCapacity)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(initialCapacity);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(initialCapacity);
 
-            Assert.Equal(initialCapacity, tsDictionary.Capacity);
+            await Assert.That(tsDictionary.Capacity).IsEqualTo(initialCapacity);
 
             tsDictionary.Clear(newCapacity);
 
-            Assert.Equal(newCapacity, tsDictionary.Capacity);
+            await Assert.That(tsDictionary.Capacity).IsEqualTo(newCapacity);
         }
 
-        [Theory]
-        [InlineData(-1, 0)]
-        [InlineData(-1, -2)]
-        [InlineData(-1, -3)]
-        [InlineData(1, 0)]
-        [InlineData(1, -2)]
-        [InlineData(1, -3)]
-        public void Test2_Clear_with_invalid_newCapacity(int initialCapacity, int newCapacity)
+        [Test]
+        [Arguments(-1, 0)]
+        [Arguments(-1, -2)]
+        [Arguments(-1, -3)]
+        [Arguments(1, 0)]
+        [Arguments(1, -2)]
+        [Arguments(1, -3)]
+        public async ValueTask Test2_Clear_with_invalid_newCapacity(int initialCapacity, int newCapacity)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(initialCapacity);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(initialCapacity);
 
-            Assert.Equal(initialCapacity, tsDictionary.Capacity);
+            await Assert.That(tsDictionary.Capacity).IsEqualTo(initialCapacity);
 
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 tsDictionary.Clear(newCapacity);
             });
 
-            Assert.Equal("Izayoi.Collections.ObservableTimestampedDictionary", exception.Source);
+            await Assert.That(exception.Source).IsEqualTo("Izayoi.Collections.ObservableTimestampedDictionary");
         }
 
-        [Fact]
+        [Test]
         public async Task Test2_ClearBefore_DateTimeOffset()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
-            Assert.Equal(0, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(0);
 
             bool addResult;
 
             {
                 addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
 
                 addResult = tsDictionary.TryAdd(12, "value12");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(2, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(2);
             }
 
             await Task.Delay(10);
@@ -1045,33 +1047,33 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 addResult = tsDictionary.TryAdd(13, "value13");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(3, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(3);
             }
 
             {
                 int removedCount = tsDictionary.ClearBefore(timestamp);
 
-                Assert.Equal(2, removedCount);
+                await Assert.That(removedCount).IsEqualTo(2);
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
 
                 bool getResult;
 
                 getResult = tsDictionary.TryGetValue(11, out _);
 
-                Assert.False(getResult);
+                await Assert.That(getResult).IsFalse();
 
                 getResult = tsDictionary.TryGetValue(12, out _);
 
-                Assert.False(getResult);
+                await Assert.That(getResult).IsFalse();
 
                 getResult = tsDictionary.TryGetValue(13, out var value);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.Equal("value13", value);
+                await Assert.That(value).IsEqualTo("value13");
             }
         }
 
@@ -1079,15 +1081,15 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Add and GetData
 
-        [Theory]
-        [InlineData(11, "value11")]
-        [InlineData(12, "value12")]
-        [InlineData(13, "value13")]
-        [InlineData(14, "value14")]
-        [InlineData(15, "value15")]
+        [Test]
+        [Arguments(11, "value11")]
+        [Arguments(12, "value12")]
+        [Arguments(13, "value13")]
+        [Arguments(14, "value14")]
+        [Arguments(15, "value15")]
         public async Task Test2_TryAdd_and_TryGetData_one(int key, string value)
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             long timestamp1 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
@@ -1096,9 +1098,9 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool addResult = tsDictionary.TryAdd(key, value);
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(1, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(1);
             }
 
             await Task.Delay(10);
@@ -1108,24 +1110,24 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
             {
                 bool getResult = tsDictionary.TryGetData(key, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp1, timestamp2);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp1, timestamp2);
 
-                Assert.Equal(key, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(key);
 
-                Assert.Equal(value, getData.Value);
+                await Assert.That(getData.Value).IsEqualTo(value);
             }
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        [Arguments(4)]
         public async Task Test2_TryAdd_and_TryGetData_any(int testPatternIndex)
         {
             var testPatternList = new List<Dictionary<int, string>>()
@@ -1166,7 +1168,7 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 },
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             var inputData = testPatternList[testPatternIndex];
 
@@ -1174,27 +1176,27 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
             await Task.Delay(10);
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputData);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputData);
 
             await Task.Delay(10);
 
             long timestamp2 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            Assert.Equal(inputData.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputData.Count);
 
             foreach (var inParam in inputData)
             {
                 bool getResult = tsDictionary.TryGetData(inParam.Key, out var getData);
 
-                Assert.True(getResult);
+                await Assert.That(getResult).IsTrue();
 
-                Assert.NotNull(getData);
+                await Assert.That(getData).IsNotNull();
 
-                Assert.InRange(getData.Timestamp, timestamp1, timestamp2);
+                await Assert.That(getData.Timestamp).IsBetween(timestamp1, timestamp2);
 
-                Assert.Equal(inParam.Key, getData.Key);
+                await Assert.That(getData.Key).IsEqualTo(inParam.Key);
 
-                Assert.Equal(inParam.Value, getData.Value);
+                await Assert.That(getData.Value).IsEqualTo(inParam.Value);
             }
         }
 
@@ -1202,39 +1204,39 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Contains Key
 
-        [Fact]
-        public void Test2_ContainsKey()
+        [Test]
+        public async ValueTask Test2_ContainsKey()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             {
                 bool containsKey = tsDictionary.ContainsKey(1);
 
-                Assert.False(containsKey);
+                await Assert.That(containsKey).IsFalse();
             }
 
             {
                 bool addResult = tsDictionary.TryAdd(1, "value1");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
             }
 
             {
                 bool containsKey = tsDictionary.ContainsKey(1);
 
-                Assert.True(containsKey);
+                await Assert.That(containsKey).IsTrue();
             }
 
             {
                 bool removeResult = tsDictionary.TryRemove(1, out _);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
             }
 
             {
                 bool containsKey = tsDictionary.ContainsKey(1);
 
-                Assert.False(containsKey);
+                await Assert.That(containsKey).IsFalse();
             }
         }
 
@@ -1242,50 +1244,50 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
         #region Keys
 
-        [Fact]
-        public void Test2_GetKeys_zero()
+        [Test]
+        public async ValueTask Test2_GetKeys_zero()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             HashSet<int> keySet = tsDictionary.GetKeys();
 
-            Assert.Empty(keySet);
+            await Assert.That(keySet).IsEmpty();
         }
 
-        [Fact]
-        public void Test2_GetKeys_zero_with_remove()
+        [Test]
+        public async ValueTask Test2_GetKeys_zero_with_remove()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             {
                 bool addResult = tsDictionary.TryAdd(11, "va1ue11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 HashSet<int> keySet = tsDictionary.GetKeys();
 
-                Assert.Single(keySet);
+                await Assert.That(keySet.Count).IsEqualTo(1);
 
-                Assert.Equal(11, keySet.First());
+                await Assert.That(keySet.First()).IsEqualTo(11);
             }
 
             {
                 bool removeResult = tsDictionary.TryRemove(11, out _);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
                 HashSet<int> keySet = tsDictionary.GetKeys();
 
-                Assert.Empty(keySet);
+                await Assert.That(keySet).IsEmpty();
             }
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        public void Test2_GetKeys_any(int testPatternIndex)
+        [Test]
+        [Arguments(0)]
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        public async ValueTask Test2_GetKeys_any(int testPatternIndex)
         {
             var testPatternList = new List<(Dictionary<int, string> inputDic, List<int> removeKeys)>()
             {
@@ -1337,28 +1339,28 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
                 ),
             };
 
-            Assert.True(testPatternIndex < testPatternList.Count);
+            await Assert.That(testPatternList).HasCount().GreaterThan(testPatternIndex);
 
             (var inputDic, var removeKeys) = testPatternList[testPatternIndex];
 
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputDic);
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>(dictionary: inputDic);
 
-            Assert.Equal(inputDic.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputDic.Count);
 
             foreach (var removeKey in removeKeys)
             {
                 bool removeResult = tsDictionary.TryRemove(removeKey, out var removeValue);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
-                //Assert.Equal(n, removeValue);  // @notice
+                //await Assert.That(removeValue).IsEqualTo(n);  // @notice
             }
 
-            Assert.Equal(inputDic.Count - removeKeys.Count, tsDictionary.Count);
+            await Assert.That(tsDictionary.Count).IsEqualTo(inputDic.Count - removeKeys.Count);
 
             HashSet<int> keySet = tsDictionary.GetKeys();
 
-            Assert.Equal(inputDic.Count - removeKeys.Count, keySet.Count);
+            await Assert.That(keySet.Count).IsEqualTo(inputDic.Count - removeKeys.Count);
 
             foreach (var inParam in inputDic)
             {
@@ -1366,82 +1368,82 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 if (removeKeys.Exists(key => key == inParam.Key))
                 {
-                    Assert.False(contains);
+                    await Assert.That(contains).IsFalse();
                 }
                 else
                 {
-                    Assert.True(contains);
+                    await Assert.That(contains).IsTrue();
                 }
             }
 
             tsDictionary.CheckConsistency();
         }
 
-        [Fact]
-        public void Test2_GetAddedKeys_any()
+        [Test]
+        public async ValueTask Test2_GetAddedKeys_any()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             {
                 bool addResult;
 
                 addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 addResult = tsDictionary.TryAdd(12, "value12");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 addResult = tsDictionary.TryAdd(13, "value13");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 addResult = tsDictionary.TryAdd(14, "value14");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(4, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(4);
             }
 
             {
                 List<int> addedKeys = tsDictionary.GetAddedKeys();
 
-                Assert.Equal(4, addedKeys.Count);
+                await Assert.That(addedKeys).HasCount().EqualTo(4);
 
-                Assert.Equal(11, addedKeys[0]);
-                Assert.Equal(12, addedKeys[1]);
-                Assert.Equal(13, addedKeys[2]);
-                Assert.Equal(14, addedKeys[3]);
+                await Assert.That(addedKeys[0]).IsEqualTo(11);
+                await Assert.That(addedKeys[1]).IsEqualTo(12);
+                await Assert.That(addedKeys[2]).IsEqualTo(13);
+                await Assert.That(addedKeys[3]).IsEqualTo(14);
             }
 
             {
                 bool removeResult = tsDictionary.TryRemove(13, out var removeValue);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
-                Assert.Equal("value13", removeValue);
+                await Assert.That(removeValue).IsEqualTo("value13");
 
-                Assert.Equal(3, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(3);
             }
 
             {
                 List<int> addedKeys = tsDictionary.GetAddedKeys();
 
-                Assert.Equal(3, addedKeys.Count);
+                await Assert.That(addedKeys).HasCount().EqualTo(3);
 
-                Assert.Equal(11, addedKeys[0]);
-                Assert.Equal(12, addedKeys[1]);
-                Assert.Equal(14, addedKeys[2]);
+                await Assert.That(addedKeys[0]).IsEqualTo(11);
+                await Assert.That(addedKeys[1]).IsEqualTo(12);
+                await Assert.That(addedKeys[2]).IsEqualTo(14);
             }
 
             tsDictionary.CheckConsistency();
         }
 
-        [Fact]
+        [Test]
         public async Task Test2_GetTimestampedKeys_any()
         {
-            using var tsDictionary = new ObservableTimestampedDictionary<int, string>();
+            var tsDictionary = new ObservableTimestampedDictionary<int, string>();
 
             long beginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
@@ -1452,67 +1454,67 @@ namespace Izayoi.Collections.ObservableTimestampedDictionary.Test
 
                 addResult = tsDictionary.TryAdd(11, "value11");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 await Task.Delay(10);
 
                 addResult = tsDictionary.TryAdd(12, "value12");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 await Task.Delay(10);
 
                 addResult = tsDictionary.TryAdd(13, "value13");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
                 await Task.Delay(10);
 
                 addResult = tsDictionary.TryAdd(14, "value14");
 
-                Assert.True(addResult);
+                await Assert.That(addResult).IsTrue();
 
-                Assert.Equal(4, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(4);
             }
 
             {
                 List<TimestampedKey<int>> timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(4, timestampedKeys.Count);
+                await Assert.That(timestampedKeys).HasCount().EqualTo(4);
 
-                Assert.Equal(11, timestampedKeys[0].Key);
-                Assert.Equal(12, timestampedKeys[1].Key);
-                Assert.Equal(13, timestampedKeys[2].Key);
-                Assert.Equal(14, timestampedKeys[3].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(11);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(12);
+                await Assert.That(timestampedKeys[2].Key).IsEqualTo(13);
+                await Assert.That(timestampedKeys[3].Key).IsEqualTo(14);
 
-                Assert.True(timestampedKeys[0].Timestamp > beginTimestamp);
-                Assert.True(timestampedKeys[1].Timestamp > timestampedKeys[0].Timestamp);
-                Assert.True(timestampedKeys[2].Timestamp > timestampedKeys[1].Timestamp);
-                Assert.True(timestampedKeys[3].Timestamp > timestampedKeys[2].Timestamp);
+                await Assert.That(beginTimestamp).IsLessThan(timestampedKeys[0].Timestamp);
+                await Assert.That(timestampedKeys[0].Timestamp).IsLessThan(timestampedKeys[1].Timestamp);
+                await Assert.That(timestampedKeys[1].Timestamp).IsLessThan(timestampedKeys[2].Timestamp);
+                await Assert.That(timestampedKeys[2].Timestamp).IsLessThan(timestampedKeys[3].Timestamp);
             }
 
             {
                 bool removeResult = tsDictionary.TryRemove(13, out var removeValue);
 
-                Assert.True(removeResult);
+                await Assert.That(removeResult).IsTrue();
 
-                Assert.Equal("value13", removeValue);
+                await Assert.That(removeValue).IsEqualTo("value13");
 
-                Assert.Equal(3, tsDictionary.Count);
+                await Assert.That(tsDictionary.Count).IsEqualTo(3);
             }
 
             {
                 List<TimestampedKey<int>> timestampedKeys = tsDictionary.GetTimestampedKeys();
 
-                Assert.Equal(3, timestampedKeys.Count);
+                await Assert.That(timestampedKeys).HasCount().EqualTo(3);
 
-                Assert.Equal(11, timestampedKeys[0].Key);
-                Assert.Equal(12, timestampedKeys[1].Key);
-                Assert.Equal(14, timestampedKeys[2].Key);
+                await Assert.That(timestampedKeys[0].Key).IsEqualTo(11);
+                await Assert.That(timestampedKeys[1].Key).IsEqualTo(12);
+                await Assert.That(timestampedKeys[2].Key).IsEqualTo(14);
 
-                Assert.True(timestampedKeys[0].Timestamp > beginTimestamp);
-                Assert.True(timestampedKeys[1].Timestamp > timestampedKeys[0].Timestamp);
-                Assert.True(timestampedKeys[2].Timestamp > timestampedKeys[1].Timestamp);
+                await Assert.That(beginTimestamp).IsLessThan(timestampedKeys[0].Timestamp);
+                await Assert.That(timestampedKeys[0].Timestamp).IsLessThan(timestampedKeys[1].Timestamp);
+                await Assert.That(timestampedKeys[1].Timestamp).IsLessThan(timestampedKeys[2].Timestamp);
             }
 
             tsDictionary.CheckConsistency();
